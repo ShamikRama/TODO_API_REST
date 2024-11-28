@@ -2,6 +2,7 @@ package main
 
 import (
 	"TODO_APP/internal/config"
+	"TODO_APP/internal/storage"
 	"log/slog"
 	"os"
 )
@@ -16,6 +17,15 @@ func main() {
 	cfg := config.MustLoad()
 
 	log := setUpLogger(cfg.Env)
+
+	if db, err := storage.New(*cfg); err != nil {
+		log.Error("failed to init storage", err)
+		os.Exit(1)
+	}
+
+	// TODO: router gin
+
+	// TODO: rus server
 }
 
 func setUpLogger(env string) *slog.Logger {
