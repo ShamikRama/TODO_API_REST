@@ -2,7 +2,10 @@ package repository
 
 import (
 	"TODO_APP/internal/model"
+	auth "TODO_APP/internal/repository/auth"
 	"database/sql"
+	// todolist "TODO_APP/internal/repository/todo_list"
+	// todoitem "TODO_APP/internal/repository/todo_item"
 )
 
 type Repository struct {
@@ -34,8 +37,8 @@ type TodoItem interface {
 
 func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
-		Authorization: NewAuthPostgres(db),
-		//TodoList:      NewTodoListPostgres(db),
-		//TodoItem:      NewTodoItemPostgres(db),
+		Authorization: auth.NewAuthPostgres(db),
+		//TodoList:      todolist.NewTodoListPostgres(db),
+		//TodoItem:      todoitem.NewTodoItemPostgres(db),
 	}
 }

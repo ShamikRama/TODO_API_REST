@@ -6,6 +6,14 @@ import (
 	"fmt"
 )
 
+const (
+	usersTable      = "users"
+	todoListsTable  = "todo_lists"
+	usersListsTable = "users_lists"
+	todoItemsTable  = "todo_items"
+	listsItemsTable = "lists_items"
+)
+
 type AuthPostgres struct {
 	db *sql.DB
 }
@@ -19,7 +27,7 @@ func NewAuthPostgres(db *sql.DB) *AuthPostgres {
 func (r *AuthPostgres) CreateUser(user model.User) (int, error) {
 	const op = "sql.Auth.CreateUser"
 
-	query := fmt.Sprintf("INSERT INTO %s (name, username, password_hash) VALUES($1, $2, $3) RETURNING id", userTable)
+	query := fmt.Sprintf("INSERT INTO %s (name, username, password_hash) VALUES($1, $2, $3) RETURNING id", usersTable)
 
 	stmt, err := r.db.Prepare(query)
 	if err != nil {
