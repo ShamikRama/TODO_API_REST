@@ -2,6 +2,9 @@ package main
 
 import (
 	"TODO_APP/internal/config"
+	handlers "TODO_APP/internal/handlers"
+	"TODO_APP/internal/repository"
+	"TODO_APP/internal/service"
 	"TODO_APP/internal/storage"
 	"log/slog"
 	"os"
@@ -18,10 +21,17 @@ func main() {
 
 	log := setUpLogger(cfg.Env)
 
-	if db, err := storage.New(*cfg); err != nil {
-		log.Error("failed to init storage", err)
+	db, err := storage.New(*cfg)
+	if err != nil {
+		log.Error("failed to connect storage", err)
 		os.Exit(1)
 	}
+
+	repos := repository.NewRepository(db)
+	serv := service.NewService(repos)
+	handler := handlers.NewHandle(serv)
+
+	_ = handler
 
 	// TODO: router gin
 

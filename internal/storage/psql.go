@@ -4,13 +4,11 @@ import (
 	"TODO_APP/internal/config"
 	"database/sql"
 	"fmt"
+
+	_ "github.com/lib/pq" // Импортируйте драйвер PostgreSQL
 )
 
-type Storage struct {
-	db *sql.DB
-}
-
-func New(cfg config.Config) (*Storage, error) {
+func New(cfg config.Config) (*sql.DB, error) {
 	const op = "storage.psql.New"
 
 	connStr := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
@@ -26,5 +24,5 @@ func New(cfg config.Config) (*Storage, error) {
 		return nil, fmt.Errorf("%s: failed to ping database: %w", op, err)
 	}
 
-	return &Storage{db: db}, nil
+	return db, nil
 }

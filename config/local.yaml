@@ -7,7 +7,7 @@ http_server:
   password: "mypass"
 database:
   user: "postgres"
-  password: ""
+  password: "mysecretpassword"
   host: "localhost"
   port: "5436"
   dbname: "shamil"
