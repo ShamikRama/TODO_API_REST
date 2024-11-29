@@ -1,8 +1,15 @@
 package service
 
-import "TODO_APP/internal/repository"
+import (
+	"TODO_APP/internal/model"
+	"TODO_APP/internal/repository"
+	"TODO_APP/internal/service/auth"
+	// "TODO_APP/internal/service/todo_item"
+	// "TODO_APP/internal/service/todo_list"
+)
 
 type Authorization interface {
+	Create(user model.User) (int, error)
 }
 
 type TodoList interface {
@@ -19,8 +26,8 @@ type Service struct {
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		// Authorization: NewAuthService(repo.Authorization),
-		//	TodoItem:      NewTodoItemService(),
-		//	TodoList:      NewTodoListService(),
+		Authorization: auth.NewAuthService(repo),
+		//	TodoItem:      todo_item.NewTodoItemService(),
+		//	TodoList:      todo_list.NewTodoListService(),
 	}
 }
