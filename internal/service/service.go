@@ -10,6 +10,8 @@ import (
 
 type Authorization interface {
 	Create(user model.User) (int, error)
+	GenerateJWTtoken(username, password string) (string, error)
+	// ParseJWTtoken()
 }
 
 type TodoList interface {
