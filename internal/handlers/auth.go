@@ -37,6 +37,13 @@ func (h *Handler) SignIn(c *gin.Context) {
 		return
 	}
 
-	// TODO : generate token
-	// TODO : parsing token
+	token, err := h.services.Authorization.GenerateJWTtoken(input.username, input.password)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"token": token,
+	})
 }

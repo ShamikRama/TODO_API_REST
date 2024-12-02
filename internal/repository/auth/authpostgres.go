@@ -6,13 +6,7 @@ import (
 	"fmt"
 )
 
-const (
-	usersTable      = "users"
-	todoListsTable  = "todo_lists"
-	usersListsTable = "users_lists"
-	todoItemsTable  = "todo_items"
-	listsItemsTable = "lists_items"
-)
+const usersTable = "users"
 
 type AuthPostgres struct {
 	db *sql.DB

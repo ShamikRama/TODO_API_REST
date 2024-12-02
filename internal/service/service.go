@@ -4,32 +4,35 @@ import (
 	"TODO_APP/internal/model"
 	"TODO_APP/internal/repository"
 	"TODO_APP/internal/service/auth"
+	list "TODO_APP/internal/service/todo_list"
 	// "TODO_APP/internal/service/todo_item"
-	// "TODO_APP/internal/service/todo_list"
 )
 
 type Authorization interface {
 	Create(user model.User) (int, error)
 	GenerateJWTtoken(username, password string) (string, error)
-	// ParseJWTtoken()
+	ParseJWTtoken(accessToken string) (int, error)
 }
 
 type TodoList interface {
+	Create(userID int, list model.TodoList) (int, error)
+	// ...
 }
 
 type TodoItem interface {
+	// ...
 }
 
 type Service struct {
 	Authorization
-	TodoItem
 	TodoList
+	// TodoItem
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		Authorization: auth.NewAuthService(repo),
+		Authorization: auth.NewAuthService(repo.Authorization),
+		TodoList:      list.NewTodoListService(repo.TodoList),
 		//	TodoItem:      todo_item.NewTodoItemService(),
-		//	TodoList:      todo_list.NewTodoListService(),
 	}
 }

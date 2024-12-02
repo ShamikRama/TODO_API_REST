@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	_ "github.com/lib/pq" // Импортируйте драйвер PostgreSQL
+	_ "github.com/lib/pq"
 )
 
 func New(cfg config.Config) (*sql.DB, error) {

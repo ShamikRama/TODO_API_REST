@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import "github.com/gin-gonic/gin"
 
@@ -14,6 +14,6 @@ func (h *Handler) updateItem(c *gin.Context) {
 
 }
 
-func (h *Handler) getItemById(c *gin.Context) {
+func (h *Handler) getAllItem(c *gin.Context) {
 
 }
