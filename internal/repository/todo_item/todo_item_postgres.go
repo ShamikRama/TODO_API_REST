@@ -57,7 +57,7 @@ func (r *TodoItemPostgres) GetAll(userID int, listID int) ([]model.TodoItem, err
 	var items []model.TodoItem
 
 	getAllItemQuery := fmt.Sprintf(
-		"SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti INNER JOIN %s li ON ti.id = li.item_id INNER JOIN %s ul ON ul.list_id = li.list_id WHERE li.list_id = $1 AND ul.user_id = $2",
+		"SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti INNER JOIN %s li ON ti.id = li.item_id INNER JOIN %s ul ON ul.list_id = li.list_id WHERE ul.user_id = $1 AND li.list_id = $2",
 		"todo_items", "lists_items", "users_lists")
 
 	rows, err := r.db.Query(getAllItemQuery, listID, userID)
