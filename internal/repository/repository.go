@@ -3,15 +3,15 @@ package repository
 import (
 	"TODO_APP/internal/model"
 	auth "TODO_APP/internal/repository/auth"
+	item "TODO_APP/internal/repository/todo_item"
 	list "TODO_APP/internal/repository/todo_list"
 	"database/sql"
-	// todoitem "TODO_APP/internal/repository/todo_item"
 )
 
 type Repository struct {
 	Authorization
 	TodoList
-	// TodoItem
+	TodoItem
 }
 
 type Authorization interface {
@@ -28,8 +28,8 @@ type TodoList interface {
 }
 
 type TodoItem interface {
-	//Create(listId int, item model.TodoItem) (int, error)
-	//GetAll(userID int, listID int) ([]model.TodoItem, error)
+	Create(listId int, item model.TodoItem) (int, error)
+	GetAll(userID int, listID int) ([]model.TodoItem, error)
 	//GetById(listID int, itemId int) (model.TodoItem, error)
 	//Delete(userID int, itemID int) error
 	//Update(userID int, itemID int, input model.UpdateItemInput) error
@@ -39,6 +39,6 @@ func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
 		Authorization: auth.NewAuthPostgres(db),
 		TodoList:      list.NewTodoListPostgres(db),
-		//TodoItem:      todoitem.NewTodoItemPostgres(db),
+		TodoItem:      item.NewTodoItemPostgres(db),
 	}
 }

@@ -4,8 +4,8 @@ import (
 	"TODO_APP/internal/model"
 	"TODO_APP/internal/repository"
 	"TODO_APP/internal/service/auth"
-	// list "TODO_APP/internal/service/todo_list"
-	// item "TODO_APP/internal/service/todo_item"
+	item "TODO_APP/internal/service/todo_item"
+	list "TODO_APP/internal/service/todo_list"
 )
 
 type Authorization interface {
@@ -23,19 +23,20 @@ type TodoList interface {
 }
 
 type TodoItem interface {
-	// ...
+	Create(userID int, listID int, item model.TodoItem) (int, error)
+	GetAllItems(userID int, listID int) ([]model.TodoItem, error)
 }
 
 type Service struct {
 	Authorization
 	TodoList
-	// TodoItem
+	TodoItem
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
 		Authorization: auth.NewAuthService(repo.Authorization),
-		//TodoList:      list.NewTodoListService(repo.TodoList),
-		//	TodoItem:      todo_item.NewTodoItemService(),
+		TodoList:      list.NewTodoListService(repo.TodoList),
+		TodoItem:      item.NewTodoItemService(repo.TodoItem, repo.TodoList),
 	}
 }
