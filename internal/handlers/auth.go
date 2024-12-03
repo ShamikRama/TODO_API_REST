@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"TODO_APP/internal/model"
@@ -8,8 +8,8 @@ import (
 )
 
 type signInRequest struct {
-	username string `json:"username" binding:"required"`
-	password string `json:"password" binding:"required"`
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 func (h *Handler) SignUp(c *gin.Context) {
@@ -37,7 +37,7 @@ func (h *Handler) SignIn(c *gin.Context) {
 		return
 	}
 
-	token, err := h.services.Authorization.GenerateJWTtoken(input.username, input.password)
+	token, err := h.services.Authorization.GenerateJWTtoken(input.Username, input.Password)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return

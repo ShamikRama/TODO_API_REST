@@ -23,7 +23,7 @@ func main() {
 
 	db, err := storage.New(*cfg)
 	if err != nil {
-		log.Error("failed to connect storage", err)
+		log.Error("failed to connect storage", error.Error(err))
 		os.Exit(1)
 	}
 
