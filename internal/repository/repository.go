@@ -32,7 +32,7 @@ type TodoItem interface {
 	GetAll(userID int, listID int) ([]model.TodoItem, error)
 	GetById(listID int, itemId int) (model.TodoItem, error)
 	DeleteById(userID int, itemID int) error
-	//Update(userID int, itemID int, input model.UpdateItemInput) error
+	UpdateById(userID int, itemID int, input model.UpdateItemInput) error
 }
 
 func NewRepository(db *sql.DB) *Repository {

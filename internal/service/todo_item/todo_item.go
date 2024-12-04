@@ -42,7 +42,7 @@ func (s *TodoItemService) DeleteItem(userID int, itemID int) error {
 func (s *TodoItemService) Update(userID int, itemID int, input model.UpdateItemInput) error {
 	err := input.Validate()
 	if err != nil {
-		return fmt.Errorf("srvice sloy error updating item")
+		return fmt.Errorf("service sloy error updating item")
 	}
 
 	return s.repo.UpdateById(userID, itemID, input)

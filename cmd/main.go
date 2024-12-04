@@ -7,7 +7,10 @@ import (
 	"TODO_APP/internal/service"
 	"TODO_APP/internal/storage"
 	"log/slog"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
 const (
@@ -23,19 +26,41 @@ func main() {
 
 	db, err := storage.New(*cfg)
 	if err != nil {
-		log.Error("failed to connect storage", error.Error(err))
+		log.Error("failed to connect storage", "error", err)
 		os.Exit(1)
 	}
 
 	repos := repository.NewRepository(db)
 	serv := service.NewService(repos)
-	handler := handlers.NewHandle(serv)
+	handlers := handlers.NewHandle(serv)
 
-	_ = handler
+	router := handlers.InitRoutes()
 
-	// TODO: router gin
+	srv := http.Server{
+		Addr:         cfg.Address,
+		Handler:      router,
+		ReadTimeout:  cfg.HTTPServer.Timeout,
+		WriteTimeout: cfg.HTTPServer.Timeout,
+		IdleTimeout:  cfg.HTTPServer.Idle_timeout,
+	}
 
-	// TODO: rus server
+	go func() {
+		err = srv.ListenAndServe()
+		if err != nil {
+			log.Error("failde to start the server")
+		}
+	}()
+
+	log.Error("server running")
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	h := http.Server{}
+
+	log.Error("server stoped")
+
 }
 
 func setUpLogger(env string) *slog.Logger {
