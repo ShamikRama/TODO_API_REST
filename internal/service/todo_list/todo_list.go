@@ -63,7 +63,7 @@ func (s *TodoListService) GetList(userID int, listID int) (model.TodoList, error
 func (s *TodoListService) UpdateList(userID int, listID int, input model.UpdateListInput) error {
 	err := input.Validate()
 	if err != nil {
-		return err
+		return fmt.Errorf("service sloy error updating list")
 	}
 
 	err = s.repo.UpdateById(userID, listID, input)

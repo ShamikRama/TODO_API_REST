@@ -30,3 +30,20 @@ func (s *TodoItemService) Create(userID int, listID int, item model.TodoItem) (i
 func (s *TodoItemService) GetAllItems(userID int, listID int) ([]model.TodoItem, error) {
 	return s.repo.GetAll(userID, listID)
 }
+
+func (s *TodoItemService) GetItem(userID int, itemID int) (model.TodoItem, error) {
+	return s.repo.GetById(userID, itemID)
+}
+
+func (s *TodoItemService) DeleteItem(userID int, itemID int) error {
+	return s.repo.DeleteById(userID, itemID)
+}
+
+func (s *TodoItemService) Update(userID int, itemID int, input model.UpdateItemInput) error {
+	err := input.Validate()
+	if err != nil {
+		return fmt.Errorf("srvice sloy error updating item")
+	}
+
+	return s.repo.UpdateById(userID, itemID, input)
+}

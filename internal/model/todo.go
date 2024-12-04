@@ -45,3 +45,11 @@ func (i UpdateListInput) Validate() error {
 
 	return nil
 }
+
+func (i UpdateItemInput) Validate() error {
+	if i.Title == nil && i.Description == nil && i.Done == nil {
+		return errors.New("update structure has no values")
+	}
+
+	return nil
+}
