@@ -50,7 +50,7 @@ func (r *AuthService) Create(user model.User) (int, error) {
 func generatePasswordHash(password string) (string, error) {
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return "", fmt.Errorf(errorHashingPassword, err)
+		return "wtf1", fmt.Errorf(errorHashingPassword, err)
 	}
 	return string(passwordHash), nil
 }
@@ -60,7 +60,7 @@ func (r *AuthService) GenerateJWTtoken(username, password string) (string, error
 	pass, err := generatePasswordHash(password)
 	if err != nil {
 		fmt.Printf("Error generate token")
-		return "", err
+		return "wtf", err
 	}
 
 	user, err := r.repo.GetUser(username, pass)

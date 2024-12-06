@@ -57,8 +57,6 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	h := http.Server{}
-
 	log.Error("server stoped")
 
 }

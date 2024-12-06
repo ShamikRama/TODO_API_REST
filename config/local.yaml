@@ -7,5 +7,5 @@ database:
   user: "postgres"
   password: "mysecretpassword"
   host: "localhost"
-  port: "5436"
-  dbname: "shamil"
+  port: "5437"
+  dbname: "shamil2"
