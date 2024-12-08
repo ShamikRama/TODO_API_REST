@@ -25,12 +25,6 @@ func (h *Handler) createList(c *gin.Context) {
 
 	listId, err := h.services.TodoList.Create(userId, input)
 	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	err = c.BindJSON(&input)
-	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -38,7 +32,6 @@ func (h *Handler) createList(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"id": listId,
 	})
-
 }
 
 type getAllListsResponse struct {

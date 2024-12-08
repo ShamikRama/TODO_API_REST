@@ -3,12 +3,12 @@ package auth
 import (
 	"TODO_APP/internal/model"
 	"TODO_APP/internal/repository"
+	"crypto/sha1"
 	"errors"
 	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -16,11 +16,16 @@ const (
 	errorCreatingUser    = "error creating user: %w"
 )
 
-// здесь было еще поле salt которе использовалось в generatepassword
 const (
+	salt       = "hjqrhjqw124617ajfhajs"
 	signingKey = "qrkjk#4#%35FSFJlja#4353KSFjH"
 	tokenTTL   = 12 * time.Hour
 )
+
+type tokenClaims struct {
+	jwt.StandardClaims
+	UserId int `json:"user_id"`
+}
 
 type AuthService struct {
 	repo repository.Authorization
@@ -32,38 +37,20 @@ func NewAuthService(repo repository.Authorization) *AuthService {
 	}
 }
 
-type tokenClaims struct {
-	jwt.StandardClaims
-	UserId int `json:"user_id"`
-}
-
 func (r *AuthService) Create(user model.User) (int, error) {
-	user.Password, _ = generatePasswordHash(user.Password)
-
-	id, err := r.repo.CreateUser(user)
-	if err != nil {
-		return 0, fmt.Errorf(errorCreatingUser, err)
-	}
-	return id, nil
+	user.Password = generatePasswordHash(user.Password)
+	return r.repo.CreateUser(user)
 }
 
-func generatePasswordHash(password string) (string, error) {
-	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return "wtf1", fmt.Errorf(errorHashingPassword, err)
-	}
-	return string(passwordHash), nil
+func generatePasswordHash(password string) string {
+	hash := sha1.New()
+	hash.Write([]byte(password))
+
+	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }
 
 func (r *AuthService) GenerateJWTtoken(username, password string) (string, error) {
-
-	pass, err := generatePasswordHash(password)
-	if err != nil {
-		fmt.Printf("Error generate token")
-		return "wtf", err
-	}
-
-	user, err := r.repo.GetUser(username, pass)
+	user, err := r.repo.GetUser(username, generatePasswordHash(password))
 	if err != nil {
 		return "", err
 	}
@@ -77,7 +64,6 @@ func (r *AuthService) GenerateJWTtoken(username, password string) (string, error
 	})
 
 	return token.SignedString([]byte(signingKey))
-
 }
 
 func (r *AuthService) ParseJWTtoken(accessToken string) (int, error) {
@@ -85,7 +71,8 @@ func (r *AuthService) ParseJWTtoken(accessToken string) (int, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
-		return signingKey, nil
+
+		return []byte(signingKey), nil
 	})
 	if err != nil {
 		return 0, err

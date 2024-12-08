@@ -95,13 +95,33 @@ func (r *TodoListPostgres) GetAll(userID int) ([]model.TodoList, error) {
 func (r *TodoListPostgres) Delete(userID int, listID int) error {
 	const op = "sql.TodoList.DeleteList"
 
-	query := fmt.Sprintf(
-		"DELETE FROM %s USING %s WHERE todo_list.id = users_lists.list_id AND users_lists.user_id=$1 AND users_lists.list_id=$2",
-		todoListsTable, usersListsTable)
-
-	_, err := r.db.Exec(query, userID, listID)
+	// Начинаем транзакцию
+	tx, err := r.db.Begin()
 	if err != nil {
-		return fmt.Errorf("%s: %w", op, err)
+		return fmt.Errorf("%s: failed to begin transaction: %w", op, err)
+	}
+
+	// Удаляем запись из таблицы users_lists
+	deleteUsersListQuery := fmt.Sprintf(
+		"DELETE FROM %s WHERE user_id = $1 AND list_id = $2", usersListsTable)
+	_, err = tx.Exec(deleteUsersListQuery, userID, listID)
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("%s: failed to execute query: %w", op, err)
+	}
+
+	// Удаляем запись из таблицы todo_lists
+	deleteListQuery := fmt.Sprintf(
+		"DELETE FROM %s WHERE id = $1", todoListsTable)
+	_, err = tx.Exec(deleteListQuery, listID)
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("%s: failed to execute query: %w", op, err)
+	}
+
+	// Завершаем транзакцию
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("%s: failed to commit transaction: %w", op, err)
 	}
 
 	return nil
